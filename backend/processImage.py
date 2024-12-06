@@ -68,7 +68,7 @@ def svd(a):
     sigma = [[0 for i in range(col)] for j in range(row)]
     for i in range(row) :
         sigma[i][i] = np.sqrt(nilai_eigen[i])
-
+#
     return u, sigma, v_satuan
 '''
 
