@@ -3,9 +3,10 @@ import numpy as np
 
 
 def histogram(data, bins, min, max):
-    histogram, bin_edges = np.histogram(data, bins=bins, range=(min, max))
-    histogram = histogram / np.sum(histogram)
-    return histogram, bin_edges
+    histogram, _ = np.histogram(data, bins=bins, range=(min, max))
+    if(np.sum(histogram) != 0):
+        histogram = histogram / np.sum(histogram)
+    return histogram
 
 def absolute_tone_based(arrMidi):
     bins = 128
@@ -32,9 +33,9 @@ def first_tone_based(arrMidi):
 # normalized_notes = normalize_pitch(notes)
 # windows = window(normalized_notes, window_size=20, step_size=4)
 # for window in windows:
-#     atb_histogram, atb_bins = absolute_tone_based(window)
-#     rtb_histogram, rtb_bins = relative_tone_based(window)
-#     ftb_histogram, ftb_bins = first_tone_based(window)
+#     atb_histogram = absolute_tone_based(window)
+#     rtb_histogram = relative_tone_based(window)
+#     ftb_histogram = first_tone_based(window)
 # print(f"ATB Histogram: {atb_histogram}")
 # print(f"RTB Histogram: {rtb_histogram}")
 # print(f"FTB Histogram: {ftb_histogram}")

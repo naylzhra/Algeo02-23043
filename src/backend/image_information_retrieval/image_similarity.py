@@ -39,4 +39,6 @@ def retrieve_img() :
     res.sort(key=lambda x:x[1])
     print(res)
     
+    return res
+    
 retrieve_img()
