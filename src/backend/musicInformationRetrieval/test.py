@@ -1,8 +1,6 @@
 import os
-import time
 from pemrosesanAudio import *
 from ekstraksiFitur import *
-print(time)
 database_music_path = "../databaseMusic"
 musicdata = []
 
