@@ -7,7 +7,7 @@ def extract_notes(midi_file_path):
     notes = []
     for track in midi.tracks:
         for msg in track:
-            if msg.type == 'note_on' and msg.channel==0 and msg.velocity > 0: #channel==0 adalah channel 1
+            if msg.type == 'note_on' and msg.channel==0 and msg.velocity > 0: #channel== 0 adalah channel 1
                 notes.append(msg.note)
     return notes
 
@@ -29,7 +29,7 @@ def windowing(notes, window_size, step_size):
     return windows
 
 # # testing
-# midi_file_path = "../databaseMusic/Delicado.mid" 
+# midi_file_path = "../database_music/Delicado.mid" 
 # notes = extract_notes(midi_file_path)
 # normalized_notes = normalize_pitch(notes)
 # windows = windowing(normalized_notes, window_size=20, step_size=4)
