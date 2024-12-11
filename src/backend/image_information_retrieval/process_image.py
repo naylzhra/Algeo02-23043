@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 from scipy.sparse.linalg import svds
 from image_similarity import projected_query
-import cupy as cp
+
 
 def grayscale(filename):
     image = Image.open(filename).resize((64, 64))
