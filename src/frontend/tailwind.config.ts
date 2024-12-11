@@ -19,6 +19,7 @@ export default {
         "yellow": {
           25: "#FFB61D",
         },
+
         "white": {
           25: "#FFFFFF",
           50: "#D9D9D9",
