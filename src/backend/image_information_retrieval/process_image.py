@@ -4,49 +4,58 @@ from PIL import Image
 from scipy.sparse.linalg import svds
 from image_similarity import projected_query
 
+import numpy as np
+
+# def compute_covariance_in_chunks(data, chunk_size):
+#     n_features = data.shape[1]
+#     cov_matrix = np.zeros((n_features, n_features), dtype=np.float32)  # Use float32 to save memory
+#     n_samples = data.shape[0]
+
+#     for start in range(0, n_samples, chunk_size):
+#         end = min(start + chunk_size, n_samples)
+#         chunk = data[start:end]
+#         # Compute the covariance of the chunk
+#         cov_chunk = np.cov(chunk, rowvar=False)
+#         # Accumulate the covariance
+#         cov_matrix += cov_chunk * (chunk.shape[0] - 1)  # Adjust for sample size
+
+#     # Normalize by the total number of samples
+#     cov_matrix /= (n_samples - 1)
+#     return cov_matrix
+
 
 def grayscale(filename):
     image = Image.open(filename).resize((64, 64))
-        
     grayscale_image= image.convert("L")
-
     grayscale_array = np.array(grayscale_image)
-    
     grayscale_vector = grayscale_array.flatten()
-    
     return grayscale_vector
 
 def standardize_images(image_arrays):
     image_stack = np.stack(image_arrays, axis=0)
-
     pixel_mean = np.mean(image_stack, axis=0)
     pixel_std = np.std(image_stack, axis=0)
     
+    pixel_std[pixel_std == 0] = 1
+    
     standardized_images = (image_stack - pixel_mean) / pixel_std
+    # standardized_images = (image_stack - pixel_mean)
+    # standardized_images = np.array(standardized_images, dtype=np.float32) 
 
-    return standardized_images, pixel_mean
+    return standardized_images, pixel_mean, pixel_std
 
 
-def matriks_kovarians(n, x):
-    x_numpy = np.array(x)
-    c = (np.matmul(x_numpy.T, x_numpy)/n)
-    return c
+# def matriks_kovarians(n, x):
+#     x_numpy = np.array(x)
+#     c = (np.matmul(x_numpy.T, x_numpy)/n)
+#     return c
 
-def proyeksi_data(k, u, standardized) :
-    u_k = u[:, :k]
-
-    row,col = u_k.shape
-    print(row)
-    print(col)
-    print("u_k= ")
-    print(u_k)
-
-    z = np.dot(standardized, u_k)
-
+def proyeksi_data(U_k, standardized) :
+    z = np.dot(standardized, U_k)
     return z
 
 def process_images(folder_path):
-    print("gambar")
+    # print("gambar")
     image_arrays = []
     image_name_arrays = []
     
@@ -63,93 +72,111 @@ def process_images(folder_path):
         image_name_arrays.append(image_name_array)
         i += 1
 
+    print()
+    print("IMAGE DATA")
     print(image_name_arrays)
 
-    standardized_images, avg_pixel = standardize_images(image_arrays)
-    print("standardized image=")
+    standardized_images, avg_pixel, pixel_std = standardize_images(image_arrays)
+    print()
+    print("Standardized Image")
     row, col = standardized_images.shape
-    print(row)
-    print(col)
+    print("Row: " + str(row))
+    print("Col: " + str(col))
     print(standardized_images)
     print("========================================")
     
     #image_kovarians = matriks_kovarians(len(image_arrays),standardized_images)
     image_kovarians = np.cov(standardized_images, rowvar= False, dtype=np.float64)
+    # image_kovarians =  compute_covariance_in_chunks(standardized_images, 5000)
     row, col = image_kovarians.shape
-    print(row)
-    print(col)
-    print("kofarian = " )
+    print()
+    print("Kofarian")
+    print("Row: "+ str(row))
+    print("Col: "+ str(col))
     print(image_kovarians)
     print("========================================")
     
     k = 5
-    #u, s, v = svds(image_kovarians, k=k)
-    u, s, v = np.linalg.svd(image_kovarians, full_matrices=False)
-    u = u[:, :5]
-    row, col = u.shape
-    print(row)
-    print(col)
-    row = s.shape
-    print(row)
-    row, col = v.shape
-    print(row)
-    print(col)
-    print("u=" )
-    print(u)
+    np.random.seed(30)
+    u, s, v = svds(image_kovarians, k=k)
+    # u, s, v = np.linalg.svds(image_kovarians, full_matrices=False)    
+    U_k = u[:, :k]
+    row, col = U_k.shape
+    print()
+    print("U_k Matrix" )
+    print("Row: " + str(row))
+    print("Col: " + str(col))
+    print(U_k)
     print("========================================")
-    hasil = proyeksi_data(5, u, standardized_images)
-    row, col = hasil.shape
-    print(row)
-    print(col)
-    print(hasil)
-    return hasil, avg_pixel, u, image_name_arrays
+    
+    projected_data = proyeksi_data(U_k, standardized_images)
+    row, col = projected_data.shape
+    print()
+    print("HASIL")
+    print("Row: " + str(row))
+    print("Col: " + str(col))
+    print(projected_data)
+    
+    return projected_data, avg_pixel, U_k, image_name_arrays, pixel_std
 
 ######################################################
 
-hasil_proses , avg_pixel, u, image_name_arrays = process_images("Human Faces Dataset/test")
+hasil_proses , avg_pixel, U_k, image_name_arrays, pixel_std = process_images("database_image/test")
 
-print(avg_pixel)
+# print(avg_pixel)
 
-vector_query = grayscale("Human Faces Dataset/test/000003.jpg")
-row = vector_query.shape
-print(row)
-print("vector query= ")
+query_file = "database_image/test/lala1.jpg"
+vector_query = grayscale(query_file)
+
+# row = vector_query.shape
+# print(row)
+print()
+print("VECTOR QUERY")
 print(vector_query)
 
-u_k = u[:, :5]
-row, col = u_k.shape
-print(row)
-print(col)
-print("u_k")
-print(u_k)
+# print(row)
+# print(col)
+# print()
+# print("U_K")
+# print(U_k)
 
-q = projected_query(vector_query, avg_pixel, u_k)
+q = projected_query(vector_query, avg_pixel, U_k, pixel_std)
 row = q.shape
-print(row)
-print("projected query")
+print()
+print("Projected Query")
+print("Row: " + str(row))
 print(q)
 print("--------------------------------")
 
 q = q.reshape(-1, 1)
 newQ = q.T
 row = newQ.shape
-print(row)
-print("projected query")
+# print(row)
+print()
+print("projected query NEW")
 print(newQ)
 print("--------------------------------")
 
 euc_dist = [(index, np.linalg.norm(q - value)) for index, value in enumerate(hasil_proses)]
-sorted_euc_dist = sorted(euc_dist, key=lambda x: (x[1], x[0]))
+sorted_euc_dist = sorted(euc_dist, key=lambda x: x[1])
 sorted_euc_dist_indices = [item[0] for item in sorted_euc_dist]
 
 row = sorted_euc_dist
-print(row)
+# print(row)
 print("sorted euc dist")
 print(sorted_euc_dist)
 print("--------------------------------")
 
+print()
+print("SORTED EUC INDEX")
 print(sorted_euc_dist_indices)
 print("--------------------------------")
+
+
+print()
+print("query " + query_file)
+for el in sorted_euc_dist_indices :
+    print(image_name_arrays[el][1])
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
 
 '''
@@ -161,11 +188,6 @@ hasilnp = np.array(hasil)
 row = hasilnp.shape
 print(row)
 '''
-
-for el in sorted_euc_dist_indices :
-    print(image_name_arrays[el][1])
-
-
 
 '''
 def svd(a):

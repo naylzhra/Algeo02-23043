@@ -15,8 +15,8 @@ eigen_vector_k = np.array([
     [0.1, 0.2]
     ])  # eigenvector matrix (Uk): p x k
 '''
-def projected_query(query, avg_pixel, eigen_vector_k) :
-    q = np.matmul((query - avg_pixel), eigen_vector_k) #(q: apakah matmul boleh dipake?)
+def projected_query(query, avg_pixel, eigen_vector_k, pixel_std) :
+    q = np.dot(((query - avg_pixel)/pixel_std), eigen_vector_k) #(q: apakah matmul boleh dipake?)
     return q
 
 def euc_dist(z, query, avg_pixel, eigen_vector_k) :
