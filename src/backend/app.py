@@ -83,7 +83,7 @@ async def upload_database_audio(file: UploadFile = File(...)):
 @app.post("/upload-database-image/")
 async def upload_database_image(file: UploadFile = File(...)):
     try:
-        path = save_and_extract_file(file, "images")
+        path = save_and_extract_file(file, "image")
         projected_data, pixel_avg, pixel_std, image_name, Uk = process_data_image(path)
 
         response_data = {
@@ -97,7 +97,7 @@ async def upload_database_image(file: UploadFile = File(...)):
 
         response_data["image_name"] = [list(item) for item in response_data["image_name"]]
 
-        json_output_path = os.path.join(BASE_DIR, "database", "images", "database_image.json")
+        json_output_path = os.path.join(BASE_DIR, "database", "image", "database_image.json")
         
         try:
             with open(json_output_path, "w") as json_file:
@@ -112,7 +112,7 @@ async def upload_database_image(file: UploadFile = File(...)):
 @app.post("/upload-mapper/")
 async def upload_mapper(file: UploadFile = File(...)):
     try:
-        save_and_extract_file(file, "mappers")
+        save_and_extract_file(file, "mapper")
         return JSONResponse(content={"message": "Upload Mapper Success!"}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -121,12 +121,6 @@ async def upload_mapper(file: UploadFile = File(...)):
 async def start_query(file: UploadFile = File(...)): #need adjustment in frontend
     try:
         path = save_and_extract_file(file, "query")
-        print(path)
-        # if (type == "music"):
-            
-        # elif (type == "image"):
-        
-        
 
         return JSONResponse(content={"message": "Query started successfully!"}, status_code=200)
     except Exception as e:
