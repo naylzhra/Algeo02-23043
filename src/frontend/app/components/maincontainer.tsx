@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Pagination from "./pagination";
-import dummy from "../../../backend/res_dummy.json";
-import mapper from "../../../backend/mapper.json"
+import query from "../../../backend/database/query/query.json";
+import mapper from "../../../backend/database/mapper/mapper.json"
 
 interface MergedData {
     title: string;
@@ -12,18 +12,22 @@ interface MergedData {
 const MainContainer: React.FC = () => {
     const [mergedData, setMergedData] = useState<MergedData[]>([]);
     useEffect(() => {
-        const combinedData = mapper.map((mapperItem) => {
-            const percentageItem = dummy.find((p) => p.audio === mapperItem.audio);
+        const combinedData = (query.music as [string, number][]).map(([audioFile, percentage]): MergedData => {
+            const percentageItem = mapper.find((p) => p.audio_file === audioFile);
 
             //combine title, image, percentage
             if (percentageItem) {
                 return {
-                    title: mapperItem.title,
-                    percentage: percentageItem.percentage,
-                    image: mapperItem.image,
+                    title: percentageItem.title,
+                    percentage: percentage.toString(),
+                    image: percentageItem.pic_name,
                 };
             }
-            return null;
+            return {
+                title: "Title not found.",
+                percentage: "0",
+                image: "Image not found."
+            } ;
         }).filter(item => item !== null) as MergedData[];
         
         setMergedData(combinedData);
