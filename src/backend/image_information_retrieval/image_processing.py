@@ -135,9 +135,11 @@ def process_image_query(file_name):
             r_similarity_percentage = round(similarity_percentage, 2)
             if r_similarity_percentage >= 70 :
                 iir_result.append((image_name[index][1], r_similarity_percentage))
+            else:
+                break
             i += 1
 
-        print(iir_result)
+        # print(iir_result)
 
         iir_json = {
             "image" : iir_result
@@ -145,10 +147,12 @@ def process_image_query(file_name):
         
         iir_json["image"] = [list(item) for item in iir_json["image"]]
 
-        json_output_path = os.path.join(BASE_DIR, "src", "backend", "database", "query", "query_image.json")
-        directory = os.path.dirname(json_output_path)
-        if not os.path.exists(directory):
-            os.makedirs(directory, exist_ok=True)
+        json_output_path = os.path.join(BASE_DIR, "database", "query", "query.json")
+        
+        # directory = os.path.dirname(json_output_path)
+        # if not os.path.exists(directory):
+        #     os.makedirs(directory, exist_ok=True)
+        
         try:
             with open(json_output_path, "w") as json_file:
                 json.dump(iir_json, json_file, indent=4)
