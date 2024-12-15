@@ -91,6 +91,7 @@ async def upload_database_image(file: UploadFile = File(...)):
             "pixel_avg" : pixel_avg,
             "pixel_std": pixel_std,
             "uk": Uk,
+            "uk": Uk,
         }
 
         response_data["image_name"] = [list(item) for item in response_data["image_name"]]
