@@ -1,16 +1,34 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 import os
 import zipfile
+import shutil
+
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Frontend's origin
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 UPLOAD_DIR = "database"
 if not os.path.exists(UPLOAD_DIR):
     os.makedirs(UPLOAD_DIR)
 
+def clear_directory(subdir: str):
+    """Delete all existing files and folders in the given subdirectory."""
+    target_dir = os.path.join(UPLOAD_DIR, subdir)
+    if os.path.exists(target_dir):
+        shutil.rmtree(target_dir)  # Delete the entire folder and its contents
+    os.makedirs(target_dir)  # Recreate the empty directory
+
 def save_and_unzip_file(file: UploadFile, subdir: str):
     """Save and unzip uploaded file to the server."""
+    clear_directory(subdir)
     target_dir = os.path.join(UPLOAD_DIR, subdir)
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
@@ -60,3 +78,4 @@ async def start_query(file: UploadFile = File(...)):
         return JSONResponse(content={"message": "Query started successfully!"}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
