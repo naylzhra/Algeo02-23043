@@ -1,11 +1,13 @@
 "use client"
 
 import { useRouter } from "next/navigation";
+import Navbar from "./navbar";
 
 export default function Home() {
-  const router = useRouter()
+  const router = useRouter();
   return (
     <div>
+      <Navbar/>
       <main className="text-left relative py-16 px-20 grid grid-flow-col scroll-smooth">
         <div>
           <h1 className="text-[6rem] font-extrabold text-gray-50 mb-[-75px]">Find Your</h1>
@@ -34,8 +36,7 @@ export default function Home() {
         <div className="flex flex-row justify-evenly mt-5">
           <button 
             onClick={()=>router.push('/music_retrieval')}
-            className="flex flex-col justify-center items-center bg-rose-400 w-full my-[2rem] mx-[6rem] rounded-3xl shadow-xl py-10\
-           hover:bg-slate-500 hover:-translate-y-1">
+            className="flex flex-col justify-center items-center bg-rose-400 w-full my-[2rem] mx-[6rem] rounded-3xl shadow-xl py-10           hover:bg-slate-500 hover:-translate-y-1">
               <img src="\Music Equalizer.svg" alt="" className="w-[10rem] h-[10rem]" />
               <p className="text-white-25 font-semibold text-4xl mt-7">Query by Humming</p>
           </button>
