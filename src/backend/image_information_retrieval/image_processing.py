@@ -6,6 +6,9 @@ import numpy as np
 
 K_Components = 10  #bisa diubah2 ya wak
 
+def numpy_to_list(arr):
+    return arr.tolist() if isinstance(arr, np.ndarray) else arr
+
 def grayscale(filename):
     #convert image to grayscale, resize to 64 x 64, then flatten to be a vector
     image = Image.open(filename).resize((144, 144))
@@ -19,7 +22,7 @@ def standardize(image_arrays):
     image_stack = np.stack(image_arrays, axis=0)
     pixel_avg = np.mean(image_stack, axis=0)
     pixel_std = np.where(image_stack.std(axis=0) == 0, 1, image_stack.std(axis=0))
-    return ((image_stack - pixel_avg) / pixel_std).astype(np.float64), pixel_avg, pixel_std
+    return ((image_stack - pixel_avg) / pixel_std).astype(np.float64), numpy_to_list(pixel_avg), numpy_to_list(pixel_std)
 
 def comp_covariance(standardized_data):
     #compute matrix covariance
@@ -32,7 +35,7 @@ def comp_svd(covariance_data, k):
 
 def projection_data(standardized_data, U):
     #get the Z matrix (data projection)
-    return np.dot(standardized_data, U)
+    return numpy_to_list(np.dot(standardized_data, U))
 
 def process_data_image(folder_path):
     image_pixel_data = []
@@ -66,7 +69,7 @@ def process_data_image(folder_path):
     # explained_variance_ratio = S / S.sum()
     # print("evr: " + str(explained_variance_ratio))
     
-    return projected_data, pixel_avg, pixel_std, image_name, Uk #cekkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+    return projected_data, pixel_avg, pixel_std, image_name, numpy_to_list(Uk) #cekkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
 
 def project_query(query, pixel_avg, pixel_std, Uk):
     return np.dot(((query - pixel_avg)/pixel_std), Uk)
@@ -77,7 +80,7 @@ def euc_dist(projected_query, projected_data):
 def process_image_query(file_name, folder_path):
     #get variables from dataset
     projected_data, pixel_avg, pixel_std, image_name, Uk = process_data_image(folder_path)
-    
+        
     #process query pixels
     query_raw = grayscale(file_name)
     projected_query = project_query(query_raw, pixel_avg, pixel_std, Uk)
