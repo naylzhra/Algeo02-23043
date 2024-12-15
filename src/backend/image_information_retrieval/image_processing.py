@@ -5,6 +5,7 @@ from scipy.sparse.linalg import svds
 import numpy as np
 import json
 
+BASE_DIR = os.path.abspath(os.getcwd())
 K_Components = 10  #bisa diubah2 ya wak
 
 def numpy_to_list(arr):
@@ -89,34 +90,91 @@ def process_image_query(file_name, folder_path):
     
     # BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
     # folder_path = os.path.join(BASE_DIR, "database", "images", "database_image.json")
-    database = json.loads("database_image.json")
-    projected_data = database["projected_data"]
-    pixel_avg = database["pixel_avg"]
-    pixel_std = database["pixel_std"]
-    image_name = database["image_name"]
-    Uk = database["Uk"]
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    json_path = os.path.join(base_dir, ".." , "database", "image","database_image.json")
+    print(f"Resolved path: {json_path}")
+    try:
+        if not os.path.exists(json_path):
+            raise FileNotFoundError(f"The file '{json_path}' was not found.")
 
-    #process query pixels
-    query_raw = grayscale(file_name)
-    projected_query = project_query(query_raw, pixel_avg, pixel_std, Uk)
-    projected_query = (projected_query.reshape(-1,1)).T
+        # Read the JSON file
+        with open(json_path, "r") as json_file:
+            database = json.load(json_file)  # Use json.load for reading JSON files
+
+        print(f"Loaded database: {database}")
+        # Your logic to process `image_path` and `database` here
+        list_projected_data = database["projected_data"]
+        list_pixel_avg = database["pixel_avg"]
+        list_pixel_std = database["pixel_std"]
+        image_name = database["image_name"]
+        list_Uk = database["Uk"]
+
+        projected_data = np.array(list_projected_data)
+        pixel_avg = np.array(list_pixel_avg)
+        pixel_std = np.array(list_pixel_std)
+        Uk = np.array(list_Uk)
+        # print("z = ", projected_data)
+        # print("pixel avg = ", pixel_avg)
+        # print("pixel std =", pixel_std)
+        # print("image name= ", image_name)
+        # print("Uk= ", Uk)
+        # print(f"Resolved path: {json_path}")
+
+        #process query pixels
+        query_raw = grayscale(file_name)
+        projected_query = project_query(query_raw, pixel_avg, pixel_std, Uk)
+        projected_query = (projected_query.reshape(-1,1)).T
+        print(f"3 Resolved path: {json_path}")
+        #get sorted euclidian distance
+        euc_distance = euc_dist(projected_query, projected_data)
+        sorted_euc_distance = sorted(euc_distance, key=lambda x: x[1])
+        sorted_euc_dist_indices = [item[0] for item in sorted_euc_distance]
+        print(f"4 Resolved path: {json_path}")
+        max_distance = sorted_euc_distance[len(image_name)-1][1] #get highest euc dist
+        
+        #append sorted image and similarity percentage result
+        iir_result = []
+        i = 0
+        for index in sorted_euc_dist_indices:
+            similarity_percentage = (max_distance - sorted_euc_distance[i][1]) / max_distance * 100
+            r_similarity_percentage = round(similarity_percentage, 2)
+            if r_similarity_percentage >= 70 :
+                iir_result.append((image_name[index][1], r_similarity_percentage))
+            i += 1
+        print(f"5 Resolved path: {json_path}")
+
+        print(iir_result)
+
+        iir_json = {
+            "image" : iir_result
+        }
+        
+        iir_json["image"] = [list(item) for item in iir_json["image"]]
+
+        json_output_path = os.path.join(BASE_DIR, "src", "backend", "database", "query", "query_image.json")
+        directory = os.path.dirname(json_output_path)
+        if not os.path.exists(directory):
+            os.makedirs(directory, exist_ok=True)
+        try:
+            with open(json_output_path, "w") as json_file:
+                json.dump(iir_json, json_file, indent=4)
+            print(f"Response data saved to {json_output_path}")
+            # return JSONResponse(content={"message": f"{json_output_path}"}, status_code=200)
+        except Exception as e:
+            print(f"Error writing JSON file: {e}")
+            # return JSONResponse(status_code=500, detail=str(e))
+
+
+    except FileNotFoundError:
+        print(f"Error: The file '{json_path}' was not found.")
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
     
-    #get sorted euclidian distance
-    euc_distance = euc_dist(projected_query, projected_data)
-    sorted_euc_distance = sorted(euc_distance, key=lambda x: x[1])
-    sorted_euc_dist_indices = [item[0] for item in sorted_euc_distance]
-    
-    max_distance = sorted_euc_distance[len(image_name)-1][1] #get highest euc dist
-    
-    #append sorted image and similarity percentage result
-    iir_result = []
-    i = 0
-    for index in sorted_euc_dist_indices:
-        similarity_percentage = (max_distance - sorted_euc_distance[i][1]) / max_distance * 100
-        iir_result.append((image_name[index][1], similarity_percentage))
-        i += 1
-    
-    return np.array(iir_result)
+
+process_image_query("C:/laptop lala/Algeo02-23043/src/backend/image_information_retrieval/lantik iso.jpg", "haha")
 
 # BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
 # folder_path = os.path.join(BASE_DIR, "database_image", "test")
