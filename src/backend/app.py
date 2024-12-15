@@ -10,7 +10,6 @@ import shutil
 import json
 import numpy as np
 
-# BASE_DIR = os.path.join(os.getcwd(), "backend")
 BASE_DIR = os.path.join(os.getcwd())
 
 app = FastAPI()
@@ -80,7 +79,7 @@ async def upload_database_audio(file: UploadFile = File(...)):
             return JSONResponse(status_code=500, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
+    
 @app.post("/upload-database-image/")
 async def upload_database_image(file: UploadFile = File(...)):
     try:
@@ -93,7 +92,10 @@ async def upload_database_image(file: UploadFile = File(...)):
             "pixel_avg" : pixel_avg,
             "pixel_std": pixel_std,
             "uk": Uk,
+            "uk": Uk,
         }
+
+        response_data["image_name"] = [list(item) for item in response_data["image_name"]]
 
         json_output_path = os.path.join(BASE_DIR, "database", "images", "database_image.json")
         
@@ -107,7 +109,6 @@ async def upload_database_image(file: UploadFile = File(...)):
             return JSONResponse(status_code=500, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 @app.post("/upload-mapper/")
 async def upload_mapper(file: UploadFile = File(...)):
     try:
@@ -130,4 +131,3 @@ async def start_query(file: UploadFile = File(...)): #need adjustment in fronten
         return JSONResponse(content={"message": "Query started successfully!"}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
