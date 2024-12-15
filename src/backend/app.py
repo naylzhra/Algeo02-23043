@@ -5,6 +5,7 @@ from image_information_retrieval.image_processing import *
 from music_information_retrieval.music_processing import *
 import os
 import zipfile
+import rarfile
 import shutil
 import json
 
@@ -63,7 +64,7 @@ async def upload_database_audio(file: UploadFile = File(...)):
             "music_name" : music_name,
             "musicdata" : musicdata,
         }
-        json_output_path = os.path.join(BASE_DIR, "hasil_proses_database_music.json")
+        json_output_path = os.path.join(BASE_DIR, "database", "audio", "database_music.json")
         try:
             with open(json_output_path, "w") as json_file:
                 json.dump(response_data, json_file, indent=4)
@@ -84,9 +85,11 @@ async def upload_database_image(file: UploadFile = File(...)):
         response_data = {
             "image_name" : image_name,
             "projected_data": projected_data,
+            "pixel_avg" : pixel_avg,
+            "pixel_std": pixel_std,
         }
 
-        json_output_path = os.path.join(BASE_DIR, "hasil_proses_database_image.json")
+        json_output_path = os.path.join(BASE_DIR, "database", "images", "database_image.json")
         try:
             with open(json_output_path, "w") as json_file:
                 json.dump(response_data, json_file, indent=4)
@@ -109,7 +112,7 @@ async def upload_mapper(file: UploadFile = File(...)):
 @app.post("/start-query/")
 async def start_query(file: UploadFile = File(...)):
     try:
-        save_and_unzip_file(file, "queries")
+        save_and_extract_file(file, "queries")
 
         return JSONResponse(content={"message": "Query started successfully!"}, status_code=200)
     except Exception as e:
