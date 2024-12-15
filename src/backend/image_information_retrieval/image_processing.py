@@ -3,8 +3,13 @@ import numpy as np
 from PIL import Image
 from scipy.sparse.linalg import svds
 import numpy as np
+import json
 
 K_Components = 10  #bisa diubah2 ya wak
+
+def numpy_to_list(arr):
+    return arr.tolist() if isinstance(arr, np.ndarray) else arr
+
 
 def grayscale(filename):
     #convert image to grayscale, resize to 64 x 64, then flatten to be a vector
@@ -65,6 +70,11 @@ def process_data_image(folder_path):
     
     # explained_variance_ratio = S / S.sum()
     # print("evr: " + str(explained_variance_ratio))
+
+    projected_data = numpy_to_list(projected_data)
+    pixel_avg = numpy_to_list(pixel_avg)
+    pixel_std = numpy_to_list(pixel_std)
+    Uk = numpy_to_list(Uk)
     
     return projected_data, pixel_avg, pixel_std, image_name, Uk #cekkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
 
@@ -76,8 +86,16 @@ def euc_dist(projected_query, projected_data):
 
 def process_image_query(file_name, folder_path):
     #get variables from dataset
-    projected_data, pixel_avg, pixel_std, image_name, Uk = process_data_image(folder_path)
     
+    # BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
+    # folder_path = os.path.join(BASE_DIR, "database", "images", "database_image.json")
+    database = json.loads("database_image.json")
+    projected_data = database["projected_data"]
+    pixel_avg = database["pixel_avg"]
+    pixel_std = database["pixel_std"]
+    image_name = database["image_name"]
+    Uk = database["Uk"]
+
     #process query pixels
     query_raw = grayscale(file_name)
     projected_query = project_query(query_raw, pixel_avg, pixel_std, Uk)
@@ -99,3 +117,14 @@ def process_image_query(file_name, folder_path):
         i += 1
     
     return np.array(iir_result)
+
+# BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
+# folder_path = os.path.join(BASE_DIR, "database_image", "test")
+# projected_data, pixel_avg, pixel_std, image_name, Uk = process_data_image(folder_path)
+
+# response_data = {
+#     "image_name" : image_name,
+#     "projected_data": projected_data,
+# }
+
+# print(response_data)
