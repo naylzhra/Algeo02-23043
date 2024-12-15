@@ -1,10 +1,14 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from src.backend.image_information_retrieval.image_processing import *
+from src.backend.music_information_retrieval.music_processing import *
 import os
 import zipfile
 import shutil
+import json
 
+BASE_DIR = os.path.join(os.getcwd(), "backend")
 
 app = FastAPI()
 app.add_middleware(
@@ -43,13 +47,26 @@ def save_and_unzip_file(file: UploadFile, subdir: str):
             zip_ref.extractall(target_dir)
         os.remove(file_path)  # Remove the zip file after extraction
 
-    return target_dir
+    return file_path
 
 @app.post("/upload-database-audio/")
 async def upload_database_audio(file: UploadFile = File(...)):
     try:
         path = save_and_unzip_file(file, "audio")
-        return JSONResponse(content={"message": f"{path}"}, status_code=200)
+        music_name, musicdata = process_music_database(path)
+        response_data = {
+            "music_name" : music_name,
+            "musicdata" : musicdata,
+        }
+        json_output_path = os.path.join(BASE_DIR, "hasil_proses_database_music.json")
+        try:
+            with open(json_output_path, "w") as json_file:
+                json.dump(response_data, json_file, indent=4)
+            print(f"Response data saved to {json_output_path}")
+            return JSONResponse(content={"message": f"{json_output_path}"}, status_code=200)
+        except Exception as e:
+            print(f"Error writing JSON file: {e}")
+            return JSONResponse(status_code=500, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -57,7 +74,22 @@ async def upload_database_audio(file: UploadFile = File(...)):
 async def upload_database_image(file: UploadFile = File(...)):
     try:
         path = save_and_unzip_file(file, "images")
-        return JSONResponse(content={"message": f"{path}"}, status_code=200)
+        projected_data, pixel_avg, pixel_std, image_name, Uk = process_data_image(path)
+
+        response_data = {
+            "image_name" : image_name,
+            "projected_data": projected_data,
+        }
+
+        json_output_path = os.path.join(BASE_DIR, "hasil_proses_database_image.json")
+        try:
+            with open(json_output_path, "w") as json_file:
+                json.dump(response_data, json_file, indent=4)
+            print(f"Response data saved to {json_output_path}")
+            return JSONResponse(content={"message": f"{json_output_path}"}, status_code=200)
+        except Exception as e:
+            print(f"Error writing JSON file: {e}")
+            return JSONResponse(status_code=500, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
