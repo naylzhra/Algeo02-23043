@@ -172,7 +172,7 @@ def process_music_query(file_query) :
             similarity_percentage = sorted_cos_sim[i][1] / max_cos_sim * 100
             r_similarity_percentage = round(similarity_percentage, 2)
             if  r_similarity_percentage >= 70:
-                mir_result.append((music_name[index][1], similarity_percentage))
+                mir_result.append((music_name[index][1], r_similarity_percentage))
             else:
                 break
             i += 1
