@@ -133,7 +133,7 @@ export default function SideBar({ type }) {
 
     return (
         <div className="bg-opacity-40 bg-white-25 h-[80vh] rounded-[23px] p-6 flex flex-col items-center gap-2">
-            <div className="w-full h-[200px] bg-white-50 rounded-lg flex items-center justify-center cursor-pointer">
+            <div className="w-full h-[200px] bg-white-50 rounded-xl flex items-center justify-center cursor-pointer">
                 <label className="text-black font-medium flex flex-col items-center">
                     {type === 'album' ? 'Upload Image' : 'Upload Humming'}
                     <input
@@ -149,7 +149,7 @@ export default function SideBar({ type }) {
             </p>
             <button
                 onClick={handleStart}
-                className="text-black font-bold mt-5 w-full bg-yellow-25 hover:bg-amber-500 py-2 rounded-lg font-medium"
+                className="text-blue-25 font-semibold mt-5 w-full bg-yellow-25 hover:bg-amber-500 py-2 rounded-lg font-medium"
             >
                 START
             </button>

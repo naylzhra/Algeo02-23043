@@ -3,9 +3,7 @@ import MusicRetrieval from "../components/music";
 
 const MusicPage = () => {
 	return (
-		<div>
-			<MusicRetrieval/>
-		</div>
+		<MusicRetrieval/>
 	);
 };
 
