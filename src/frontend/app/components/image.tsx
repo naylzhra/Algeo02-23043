@@ -43,7 +43,7 @@ export default function ImageRetrieval(){
             {/*Body*/}
             <div className="grid grid-cols-5 gap-8 ml-7 mr-7 mt-10">
                 {/*Side Bar*/}
-                <SideBar/>
+                <SideBar type = 'album'/>
                 {/*Main Page Bar*/}
                 <div className="border col-span-4">
                     <MainContainer/>
