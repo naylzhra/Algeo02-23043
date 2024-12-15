@@ -96,7 +96,7 @@ export default function SideBar({ type }) {
 
         if (audioUploaded && imageUploaded && mapperUploaded) {
             setIsDatabaseLoaded(true);
-            alert('Database successfully loaded!');
+            alert('Database successfully uploaded!');
         }
     };
 
@@ -182,7 +182,7 @@ export default function SideBar({ type }) {
                     Mapper
                     <input
                         type="file"
-                        accept=".zip,.rar"
+                        accept=".json,.txt"
                         className="hidden"
                         onChange={(e) => setSelectedMapperFile(e.target.files[0])}
                     />
