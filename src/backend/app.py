@@ -8,8 +8,10 @@ import zipfile
 import rarfile
 import shutil
 import json
+import numpy as np
 
-BASE_DIR = os.path.join(os.getcwd(), "backend")
+# BASE_DIR = os.path.join(os.getcwd(), "backend")
+BASE_DIR = os.path.join(os.getcwd())
 
 app = FastAPI()
 app.add_middleware(
@@ -53,23 +55,26 @@ def save_and_extract_file(file: UploadFile, subdir: str):
         with rarfile.RarFile(file_path, 'r') as rar_ref:
             rar_ref.extractall(target_dir)
         os.remove(file_path)  # Remove the rar file after extraction
-    return file_path
+    return target_dir
 
 @app.post("/upload-database-audio/")
 async def upload_database_audio(file: UploadFile = File(...)):
     try:
         path = save_and_extract_file(file, "audio")
-        music_name, musicdata = process_music_database(path)
+        music_name, music_data = process_music_database(path)
+        
         response_data = {
             "music_name" : music_name,
-            "musicdata" : musicdata,
+            "music_data" : music_data,
         }
+                
         json_output_path = os.path.join(BASE_DIR, "database", "audio", "database_music.json")
+        
         try:
             with open(json_output_path, "w") as json_file:
                 json.dump(response_data, json_file, indent=4)
             print(f"Response data saved to {json_output_path}")
-            return JSONResponse(content={"message": f"{json_output_path}"}, status_code=200)
+            return JSONResponse(content={"message": "Upload & Load Audio Success!"}, status_code=200)
         except Exception as e:
             print(f"Error writing JSON file: {e}")
             return JSONResponse(status_code=500, detail=str(e))
@@ -91,11 +96,12 @@ async def upload_database_image(file: UploadFile = File(...)):
         }
 
         json_output_path = os.path.join(BASE_DIR, "database", "images", "database_image.json")
+        
         try:
             with open(json_output_path, "w") as json_file:
                 json.dump(response_data, json_file, indent=4)
             print(f"Response data saved to {json_output_path}")
-            return JSONResponse(content={"message": f"{json_output_path}"}, status_code=200)
+            return JSONResponse(content={"message": "Upload & Load Images Success!"}, status_code=200)
         except Exception as e:
             print(f"Error writing JSON file: {e}")
             return JSONResponse(status_code=500, detail=str(e))
@@ -106,14 +112,20 @@ async def upload_database_image(file: UploadFile = File(...)):
 async def upload_mapper(file: UploadFile = File(...)):
     try:
         save_and_extract_file(file, "mappers")
-        return JSONResponse(content={"message": "Mapper file uploaded and unzipped successfully!"}, status_code=200)
+        return JSONResponse(content={"message": "Upload Mapper Success!"}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/start-query/")
-async def start_query(file: UploadFile = File(...)):
+async def start_query(file: UploadFile = File(...)): #need adjustment in frontend
     try:
-        # save_and_extract_file(file, "queries")
+        path = save_and_extract_file(file, "query")
+        print(path)
+        # if (type == "music"):
+            
+        # elif (type == "image"):
+        
+        
 
         return JSONResponse(content={"message": "Query started successfully!"}, status_code=200)
     except Exception as e:
