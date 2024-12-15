@@ -31,7 +31,17 @@ const MainContainer: React.FC = () => {
 
     return (
         <div className="pb-4">
-            <p className="text-center text-white-25 font-semibold border">Query Result</p>
+            <div className="text-center text-white-25 font-semibold border justify-items-stretch">
+                <div className="border">Query Result</div>
+                <div className="grid grid-cols-2">
+                    <div className=""> {/*API here buat load time slth loadDatabase*/}
+                        Load Time : 
+                    </div>
+                    <div>
+                        Query Time :
+                    </div>
+                </div>
+            </div>
             <Pagination items={mergedData} itemsPerPage={12}/>
         </div>
     );
