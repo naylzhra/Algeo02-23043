@@ -6,7 +6,7 @@ start_time = datetime.now()
 file_query = "database_image/test/lion1.jpg"
 database_folder = "database_image/test"
 
-iir_result = process_image_query(file_query, database_folder)
+iir_result = process_image_query(file_query)
 print(iir_result)
 
 #time computing

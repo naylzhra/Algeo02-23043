@@ -2,6 +2,11 @@ import numpy as np
 import os
 from mido import MidiFile
 
+BASE_DIR = os.path.abspath(os.getcwd())
+
+def numpy_to_list(arr):
+    return arr.tolist() if isinstance(arr, np.ndarray) else arr
+
 ############################################# Ekstraksi Fitur #############################################
 
 def histogram(data, bins, min, max):
@@ -85,7 +90,7 @@ def process_music_database(database_music_path):
                         musicdata.append(temp)
                     # else:
                         # print(f"{entry.name}: No note in channel 1 detected.")
-                 
+    musicdata = numpy_to_list(musicdata)
     return music_name, musicdata
 
 def process_query(file_name, database_music_path):
@@ -148,6 +153,7 @@ def process_music_query(file_query, database_folder) :
     i = 0
     for index in sorted_cos_sim_indices:
         similarity_percentage = sorted_cos_sim[i][1] / max_cos_sim * 100
+        r_similarity
         mir_result.append((music_name[index][1], similarity_percentage))
         i += 1
     

@@ -85,7 +85,7 @@ def project_query(query, pixel_avg, pixel_std, Uk):
 def euc_dist(projected_query, projected_data):
     return [(index, np.linalg.norm(projected_query - value)) for index, value in enumerate(projected_data)]
 
-def process_image_query(file_name, folder_path):
+def process_image_query(file_name):
     #get variables from dataset
     
     # BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
@@ -101,7 +101,6 @@ def process_image_query(file_name, folder_path):
         with open(json_path, "r") as json_file:
             database = json.load(json_file)  # Use json.load for reading JSON files
 
-        print(f"Loaded database: {database}")
         # Your logic to process `image_path` and `database` here
         list_projected_data = database["projected_data"]
         list_pixel_avg = database["pixel_avg"]
@@ -124,7 +123,6 @@ def process_image_query(file_name, folder_path):
         query_raw = grayscale(file_name)
         projected_query = project_query(query_raw, pixel_avg, pixel_std, Uk)
         projected_query = (projected_query.reshape(-1,1)).T
-        print(f"3 Resolved path: {json_path}")
         #get sorted euclidian distance
         euc_distance = euc_dist(projected_query, projected_data)
         sorted_euc_distance = sorted(euc_distance, key=lambda x: x[1])
@@ -141,7 +139,6 @@ def process_image_query(file_name, folder_path):
             if r_similarity_percentage >= 70 :
                 iir_result.append((image_name[index][1], r_similarity_percentage))
             i += 1
-        print(f"5 Resolved path: {json_path}")
 
         print(iir_result)
 
@@ -174,7 +171,7 @@ def process_image_query(file_name, folder_path):
 
     
 
-process_image_query("C:/laptop lala/Algeo02-23043/src/backend/image_information_retrieval/lantik iso.jpg", "haha")
+# process_image_query("C:/laptop lala/Algeo02-23043/src/backend/image_information_retrieval/lantik iso.jpg", )
 
 # BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
 # folder_path = os.path.join(BASE_DIR, "database_image", "test")

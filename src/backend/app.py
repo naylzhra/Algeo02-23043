@@ -9,7 +9,7 @@ import rarfile
 import shutil
 import json
 
-BASE_DIR = os.path.join(os.getcwd(), "backend")
+BASE_DIR = os.path.join(os.getcwd())
 
 app = FastAPI()
 app.add_middleware(
