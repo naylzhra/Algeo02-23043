@@ -103,7 +103,7 @@ def process_image_query(file_name):
         list_pixel_avg = database["pixel_avg"]
         list_pixel_std = database["pixel_std"]
         image_name = database["image_name"]
-        list_Uk = database["Uk"]
+        list_Uk = database["uk"]
 
         projected_data = np.array(list_projected_data)
         pixel_avg = np.array(list_pixel_avg)
@@ -142,16 +142,12 @@ def process_image_query(file_name):
         # print(iir_result)
 
         iir_json = {
-            "image" : iir_result
+            "result" : iir_result
         }
         
-        iir_json["image"] = [list(item) for item in iir_json["image"]]
+        iir_json["result"] = [list(item) for item in iir_json["result"]]
 
         json_output_path = os.path.join(BASE_DIR, "database", "query", "query.json")
-        
-        # directory = os.path.dirname(json_output_path)
-        # if not os.path.exists(directory):
-        #     os.makedirs(directory, exist_ok=True)
         
         try:
             with open(json_output_path, "w") as json_file:

@@ -6,18 +6,28 @@ import { useRouter } from "next/navigation";
 import MainContainer from "../components/maincontainer";
 
 const MusicRetrieval: React.FC = () => {
-	const [showType, setshowType] = useState(false);
+	const [showType, setshowType] = useState<number>(-1);
+	const [isDatabaseLoaded, setIsDatabaseLoaded] = useState<boolean>(false);
 	
 	// Callback to handle query result
-	const handleQueryResult = (isStarted: boolean) => {
-		setshowType(true);
+	const handleQueryResult = async (isStarted: boolean) => {
+		if (isDatabaseLoaded && isStarted) {
+			setshowType((prev) => prev + 1);
+		}
+	};
+	
+	const handleLoadDatabase = async (isLoaded: boolean) => {
+		setIsDatabaseLoaded(isLoaded);
+		if (isLoaded && showType === -1) {
+			setshowType(0);
+		}
 	};
   	
 	const router = useRouter()
 
 	return (
 		<div className="flex flex-col">
-			<div className="flex flex-row align-middle justify-between mt-3 w-full z-50 border-b-2 pb-2">
+			<div className="flex flex-row align-middle justify-between mt-3 w-full z-50-b-2 pb-2 border-b-2">
 				{/*Left Component*/}
 				<div className="flex flex-row gap-5 ml-7"> 
 					<button>
@@ -52,9 +62,10 @@ const MusicRetrieval: React.FC = () => {
 				{/*Side Bar*/}
 				<Sidebar 
 				type="music" 
-        		onQueryResult={handleQueryResult}/>
+        		onQueryResult={handleQueryResult}
+				onLoadDatabase={handleLoadDatabase}/>
 				{/*Main Page Bar*/}
-				<div className="border col-span-4">
+				<div className="col-span-4">
 					<MainContainer showQueryType={showType} queryType="music" />
 				</div>
 			</div>

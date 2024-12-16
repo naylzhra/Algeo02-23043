@@ -50,10 +50,10 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="flex flex-col border m-8">
+      <div className="flex flex-col m-8">
         <p className="font-bold text-white-25 text-4xl">The Contributors</p>
         <p className="text-white-25 text-lg mt-1">Kelompok Menjajal Nilai Maksimal</p>
-        <div className="grid grid-cols-3 gap-5 justify-items-center mt-7 border">
+        <div className="grid grid-cols-3 gap-5 justify-items-center mt-7">
             <div className="bg-yellow-25 px-12 py-2 rounded-3xl shadow-xl">
               Najwa Kahani Fatima - 13523043 - K01
             </div>

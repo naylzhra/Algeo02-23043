@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Pagination from "./pagination";
-import mapper from "../../../backend/database/mapper/mapper.json";
-
-
 
 interface MainContainerProps {
-  showQueryType: boolean;
+  showQueryType: number;
   queryType: string;
 }
 
@@ -16,52 +13,104 @@ interface MergedData {
 }
 
 const MainContainer: React.FC<MainContainerProps> = ({ showQueryType, queryType }) => {
-
   const [mergedData, setMergedData] = useState<MergedData[]>([]);
-  const fetchData = async () => {
+
+  console.log('useEffect triggered:', showQueryType, queryType);
+
+  const fetchQueryData = async () => {
     try {
-      const query = await import("../../../backend/database/query/query.json");
-      return query
+      const query = await fetch(`http://localhost:8000/queryResult`);
+      return query; // Ensure .default is used for ES Module
     } catch (err) {
-      alert("Error loading query data: " + err);
+      console.error("Error loading query data:", err);
       return null;
-    }};
-      
+    }
+  };
+
+  const fetchMapperData = async () => {
+    try {
+      const mapper = await fetch(`http://localhost:8000/mapperData`);
+      return mapper; // Ensure .default is used for ES Module
+    } catch (err) {
+      console.error("Error loading mapper data:", err);
+      return null;
+    }
+  };
+
   useEffect(() => {
-    const fetchDataAndCombine = async () => {
     
+    const fetchDataAndCombine = async () => {
+
       try {
         // Fetch images
+
         const response = await fetch("http://127.0.0.1:8000/images");
         const images = await response.json();
 
-        // Determine combined data based on `showQueryType` and `queryType`
+
+        // Initialize combined data
         let combinedData: MergedData[] = [];
 
-        if (!showQueryType) {
-          // Default case: If `showQueryType` is false
-          combinedData = mapper.map((item) => {
-            const image = images.find((img) => img.name === item.pic_name);
-            return {
-              title: item.title,
-              percentage: "0", // Default percentage
-              image: image ? `http://localhost:8000${image.url}` : "Image not found",
-            };
-          });
-        } else if (queryType === "music" || queryType === "album") {
-          combinedData = (query.music as [string, number][]).map(([audioFile, percentage]) => {
-            const percentageItem = mapper.find((p) => p.audio_file === audioFile);
-
-            if (percentageItem) {
-              const image = images.find((img) => img.name === percentageItem.pic_name);
+        if (showQueryType <0) {
+          return;
+        } 
+        else if (showQueryType === 0){
+          // Default case: If database loaded but query isn't
+          const mapperData = await fetchMapperData();
+          if (mapperData?.ok){
+            const mapper = await mapperData.json();
+            combinedData = mapper.map((item: any) => {
+              const image = images.find((img: any) => img.name === item.pic_name);
               return {
-                title: percentageItem.title,
-                percentage: percentage.toString(),
+                title: item.title,
+                percentage: "0", // Default percentage
                 image: image ? `http://localhost:8000${image.url}` : "Image not found",
               };
+            });
+          }
+        } 
+        else if (queryType === "music" || queryType === "album") {
+          console.log("masuk")
+          // Dynamically fetch query data
+          const mapperData = await fetchMapperData();
+          if (mapperData?.ok){
+            const mapper = await mapperData.json();
+            console.log(mapper)
+            const queryData = await fetchQueryData();
+            if (queryData?.ok){
+              console.log("query data ok")
+              const query = await queryData.json();
+              if (queryData && queryType === "music") {
+                  combinedData = (query.result as [string, number][]).map(([audioFile, percentage]) => {
+                  const percentageItem = mapper.find((p: any) => p.audio_file === audioFile);
+
+                  if (percentageItem) {
+                      const image = images.find((img: any) => img.name === percentageItem.pic_name);
+                      return {
+                      title: percentageItem.title,
+                      percentage: percentage.toString(),
+                      image: image ? `http://localhost:8000${image.url}` : "Image not found",
+                      };
+                    }
+                    return null; // Return null if no match
+                }).filter((item) => item !== null) as MergedData[];
+              } else if (queryData && queryType === "album"){
+                combinedData = (query.result as [string, number][]).map(([imageFile, percentage]) => {
+                  const percentageItem = mapper.find((p: any) => p.pic_name === imageFile);
+
+                  if (percentageItem) {
+                    const image = images.find((img: any) => img.name === percentageItem.pic_name);
+                    return {
+                    title: percentageItem.title,
+                    percentage: percentage.toString(),
+                    image: image ? `http://localhost:8000${image.url}` : "Image not found",
+                    };
+                  }
+                  return null; // Return null if no match
+                }).filter((item) => item !== null) as MergedData[];
+              }
             }
-            return null; // Return null if no match
-          }).filter((item) => item !== null) as MergedData[];
+          }
         }
 
         // Update merged data state
@@ -73,6 +122,8 @@ const MainContainer: React.FC<MainContainerProps> = ({ showQueryType, queryType 
 
     fetchDataAndCombine();
   }, [showQueryType, queryType]); // Re-run only if these props change
+
+  console.log(mergedData);
 
   return (
     <div className="pb-4">

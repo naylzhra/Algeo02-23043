@@ -145,7 +145,7 @@ async def start_query(type: str, file: UploadFile = File(...)): #need adjustment
         path = save_and_extract_file(file, "query")
         query_path = os.path.join(path, file.filename) #get the query file name
         
-        if type == "image":
+        if type == "album":
             duration = image_model(query_path)
             return JSONResponse(
                 content={
@@ -153,7 +153,7 @@ async def start_query(type: str, file: UploadFile = File(...)): #need adjustment
                     "duration" : duration,
                 }
             )
-        elif type == "audio":
+        elif type == "music":
             duration = music_model(query_path)
             return JSONResponse(
                 content={
@@ -185,5 +185,48 @@ async def get_images():
 
         return JSONResponse(content=image_files)
     
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+
+@app.get("/queryResult")
+async def get_queryResult():
+    try:
+        base_dir = os.path.dirname(os.path.abspath(__file__))  # Current file directory
+        file_path = os.path.join(base_dir, "database/query/query.json")  # Adjust relative path
+
+        if not os.path.exists(file_path):
+            raise HTTPException(status_code=404, detail=f"query.json file not found, {file_path}")
+
+        with open(file_path, "r") as file:
+            queryResult = json.load(file)
+
+        if not queryResult:
+            raise HTTPException(status_code=404, detail="No result found in query.json")
+
+        return JSONResponse(content=queryResult)
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/mapperData")
+async def get_mapperData():
+    try:
+        base_dir = os.path.dirname(os.path.abspath(__file__))  # Current file directory
+        file_path = os.path.join(base_dir, "database/mapper/mapper.json")  # Adjust relative path
+
+        if not os.path.exists(file_path):
+            raise HTTPException(status_code=404, detail=f"mapper.json file not found, {file_path}")
+
+        with open(file_path, "r") as file:
+            mapperData = json.load(file)
+
+        if not mapperData:
+            raise HTTPException(status_code=404, detail="No result found in mapper.json")
+
+        return JSONResponse(content=mapperData)
+    except HTTPException as http_exc:
+        raise http_exc
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -178,10 +178,10 @@ def process_music_query(file_query) :
             i += 1
             
         mir_json = {
-            "music": mir_result
+            "result": mir_result
         }
         
-        mir_json["music"] = [list(item) for item in mir_json["music"]]
+        mir_json["result"] = [list(item) for item in mir_json["result"]]
         
         json_output_path = os.path.join(BASE_DIR, "database", "query", "query.json")
         

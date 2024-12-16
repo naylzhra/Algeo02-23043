@@ -1,20 +1,12 @@
 {
-    "music": [
+    "result": [
         [
-            "Breakfast_At_Tiffanys.mid",
+            "Never_Alone.mid",
             100.0
         ],
         [
             "Tico_Tico.mid",
-            85.72
-        ],
-        [
-            "Let_Me_Be_Free.mid",
-            78.35
-        ],
-        [
-            "Delicado.mid",
-            72.12
+            70.01
         ]
     ]
 }

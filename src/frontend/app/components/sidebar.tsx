@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 
 type SideBarProps = {
   type: string;
+  onQueryResult: (isStarted: boolean)=> void;
+  onLoadDatabase: (isLoaded: boolean)=> void;
 };
 
-export default function SideBar({ type }: SideBarProps) {
+export default function SideBar({ type, onQueryResult, onLoadDatabase }: SideBarProps) {
   const [selectedAudioFile, setSelectedAudioFile] = useState<File | null>(null);
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [selectedMapperFile, setSelectedMapperFile] = useState<File | null>(null);
@@ -28,6 +30,8 @@ export default function SideBar({ type }: SideBarProps) {
         method: 'POST',
         body: formData,
       });
+
+      console.log("cek", endpoint)
 
       if (!response.ok) throw new Error(`Failed to upload file to ${endpoint}`);
 
@@ -53,6 +57,7 @@ export default function SideBar({ type }: SideBarProps) {
       setIsDatabaseLoaded(true);
       setCompTimeImage(imageUploaded.duration || 'N/A');
       setCompTimeMusic(audioUploaded.duration || 'N//A');
+      onLoadDatabase(true)
       alert('Database successfully uploaded!');
     }
   };
@@ -69,7 +74,7 @@ export default function SideBar({ type }: SideBarProps) {
       const formData = new FormData();
       formData.append('file', selectedQueryFile as File);
 
-      const endpoint = type === 'album' ? 'start-query/image' : 'start-query/audio'
+      const endpoint = type === 'album' ? 'start-query/album' : 'start-query/music'
       const response = await fetch(`http://localhost:8000/${endpoint}/`, {
         method: 'POST',
         body: formData,
@@ -86,6 +91,7 @@ export default function SideBar({ type }: SideBarProps) {
       console.log("duration: ", result.duration)
 
       alert(result.message);
+      onQueryResult(true)
 
     } catch (error) {
       console.error('Error starting query:', error);
@@ -124,19 +130,19 @@ export default function SideBar({ type }: SideBarProps) {
       <div className="file-upload-container w-full flex flex-col items-center">
         <FileUpload
           label="Dataset Audio"
-          accept=".zip,.rar"
+          accept='.zip, .rar'
           file={selectedAudioFile}
           setFile={setSelectedAudioFile}
         />
         <FileUpload
           label="Dataset Image"
-          accept=".zip,.rar"
+          accept='.zip, .rar'
           file={selectedImageFile}
           setFile={setSelectedImageFile}
         />
         <FileUpload
           label="Mapper"
-          accept=".json,.txt"
+          accept='.json, .txt'
           file={selectedMapperFile}
           setFile={setSelectedMapperFile}
         />
