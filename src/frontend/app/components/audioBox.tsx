@@ -9,14 +9,12 @@ interface CardProperties {
 
 const AudioBox: React.FC<CardProperties> = ({ title, percentage, image }) => {
 
-  const imagePath = `/api/images/${image}`;
-
   return (
     <div className='flex flex-col flex-wrap place-content-center border'>
         <div className="w-[250px] h-[130px] bg-white-50 rounded-3xl flex items-center justify-center overflow-hidden shadow-xl">
             <img 
             className='w-full h-full object-cover'
-            src={imagePath}
+            src={image}
             alt="" />          
         </div>
         <div className='flex flex-row'>
