@@ -3,7 +3,7 @@
 # MuseIc
 > Find your music
 
-Sebuah website yang dapat menerima input lagu, gambar album, dan file humming dan mendeteksi nama dari lagu tersebut. 
+Sebuah website yang dapat menerima input lagu, gambar album, dan file humming lalu mendeteksi nama dari lagu tersebut. 
 
 ## Installing / Getting started
 Anda perlu menginstall pip dan Node.js.
