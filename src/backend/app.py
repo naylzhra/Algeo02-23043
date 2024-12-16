@@ -1,6 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from image_information_retrieval.image_processing import *
 from music_information_retrieval.music_processing import *
 from image_information_retrieval.iir_model import *
