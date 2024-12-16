@@ -65,9 +65,10 @@ def save_and_extract_file(file: UploadFile, subdir: str):
 async def upload_database_audio(file: UploadFile = File(...)):
     try:
         path = save_and_extract_file(file, "audio")
-        
+        file_path = os.path.join(path, file.filename)
+        file_path = os.path.splitext(file_path)[0]
         start_time = datetime.now()
-        music_name, music_data = process_music_database(path)
+        music_name, music_data = process_music_database(file_path)
         end_time = datetime.now()
         
         duration = end_time - start_time
@@ -99,9 +100,10 @@ async def upload_database_audio(file: UploadFile = File(...)):
 async def upload_database_image(file: UploadFile = File(...)):
     try:
         path = save_and_extract_file(file, "image")
-        
+        file_path = os.path.join(path, file.filename)
+        file_path = os.path.splitext(file_path)[0]
         start_time = datetime.now()
-        projected_data, pixel_avg, pixel_std, image_name, Uk = process_data_image(path)
+        projected_data, pixel_avg, pixel_std, image_name, Uk = process_data_image(file_path)
         end_time = datetime.now()
         
         duration = end_time - start_time
@@ -132,7 +134,7 @@ async def upload_database_image(file: UploadFile = File(...)):
             print(f"Error writing JSON file: {e}")
             return JSONResponse(status_code=500, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=700, detail=str(e))
 @app.post("/upload-mapper/")
 async def upload_mapper(file: UploadFile = File(...)):
     try:
