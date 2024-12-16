@@ -99,9 +99,6 @@ Apabila Anda ingin berkontribusi dalam projek ini, silakan fork repository ini d
 ## Links
 - Repository: https://github.com/najwakahanifatima/Algeo02-23043
 - Issue tracker: https://github.com/your/awesome-project/issues
-  - In case of sensitive bugs like security vulnerabilities, please contact
-    
-    emaiiillll
 
 ## Licensing
 
