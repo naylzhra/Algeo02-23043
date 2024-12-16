@@ -5,6 +5,31 @@
 
 Sebuah website yang dapat menerima input lagu, gambar album, dan file humming lalu mendeteksi nama dari lagu tersebut. 
 
+<div align="center" id="contributor">
+  <strong>
+    <h3>Dibuat oleh Kelompok 14 - Menjajal Nilai Maksimal</h3>
+    <table align="center">
+      <tr>
+        <td>NIM</td>
+        <td>Nama</td>
+      </tr>
+      <tr>
+        <td>13522043</td>
+        <td>Najwa Kahani Fatima</td>
+      </tr>
+      <tr>
+        <td>13522050</td>
+        <td>Mayla Yaffa Ludmilla</td>
+      </tr>
+      <tr>
+        <td>13522079</td>
+        <td>Nayla Zahira</td>
+      </tr>
+    </table>
+  </strong>
+</div>
+
+
 ## Installing / Getting started
 Anda perlu menginstall pip dan Node.js.
 Setelah itu, install package package di bawah ini dengan run kode :
