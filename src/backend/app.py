@@ -166,3 +166,26 @@ async def start_query(type: str, file: UploadFile = File(...)): #need adjustment
         return JSONResponse(content={"message": "Query not started due to invalid input."}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+IMAGE_DIR = os.path.join(os.getcwd(), "database", "image")
+
+@app.get("/images")
+async def get_images():
+    try:
+        # Get list of image files in the image directory
+        image_files = []
+        for filename in os.listdir(IMAGE_DIR):
+            if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
+                image_files.append({
+                    "name": filename,
+                    "url": f"/images/{filename}"  # Serve image via /images/{filename}
+                })
+        
+        # If no images are found
+        if not image_files:
+            raise HTTPException(status_code=404, detail="No images found")
+
+        return JSONResponse(content=image_files)
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
