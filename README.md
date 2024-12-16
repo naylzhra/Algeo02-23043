@@ -1,11 +1,9 @@
-![Logo of the project](https://raw.githubusercontent.com/jehna/readme-best-practices/master/sample-logo.png)
-
-# MuseIc
+<h3> MuseIc </h3>
 > Find your music
 
-Sebuah website yang dapat menerima input lagu, gambar album, dan file humming lalu mendeteksi nama dari lagu tersebut. 
+Sebuah website yang dapat menerima input lagu, gambar album, dan file humming lalu mendeteksi nama dari lagu tersebut. Dibuat sebagai tugas besar 2 Algoritma dan Struktur Data.
 
-<div align="center" id="contributor">
+<div id="contributor">
   <strong>
     <h3>Dibuat oleh Kelompok 14 - Menjajal Nilai Maksimal</h3>
     <table align="center">
