@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
 
-interface SideBarProps {
+type SideBarProps = {
   type: string;
-  onQueryResult: (isStarted: boolean) => void; // Pass boolean when query is started
-}
+};
 
-export default function SideBar({ 
-  type,
-  onQueryResult,
-  }: SideBarProps) {
-
+export default function SideBar({ type }: SideBarProps) {
   const [selectedAudioFile, setSelectedAudioFile] = useState<File | null>(null);
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
   const [selectedMapperFile, setSelectedMapperFile] = useState<File | null>(null);
@@ -69,10 +64,7 @@ export default function SideBar({
       alert('Please load the database before starting a query.');
       return;
     }
-    if (!selectedQueryFile) {
-      alert('No file selected!');
-      return;
-    }
+
     try {
       const formData = new FormData();
       formData.append('file', selectedQueryFile as File);
@@ -83,13 +75,18 @@ export default function SideBar({
         body: formData,
       });
 
-      if (!response.ok) throw new Error(`Failed to start-query`);
+      if (!response.ok) {
+        alert('Error! Failed to start query!');
+      }
+
       const result = await response.json();
+
       setComputationTime(result.duration || 'N/A');
+
       console.log("duration: ", result.duration)
+
       alert(result.message);
-      onQueryResult(true);
-      
+
     } catch (error) {
       console.error('Error starting query:', error);
       alert('Failed to start query.');
@@ -118,7 +115,6 @@ export default function SideBar({
       </p>
       <button
         onClick={handleStart}
-        disabled={!isDatabaseLoaded}
         className="text-blue-25 mt-5 w-full bg-yellow-25 hover:bg-amber-500 py-2 rounded-lg font-medium"
       >
         START
@@ -157,9 +153,9 @@ export default function SideBar({
             <p>Load Time Audio: Unknown</p>
           )}  
           {compTimeImage ? (
-            <p>Load Time Audio: {compTimeImage} s</p>
+            <p>Load Time Image: {compTimeImage} s</p>
           ) : (
-            <p>Load Time Audio: Unknown</p>
+            <p>Load Time Image: Unknown</p>
           )}  
         </div>
         <div className='mt-3 text-white-25 text-sm'>
