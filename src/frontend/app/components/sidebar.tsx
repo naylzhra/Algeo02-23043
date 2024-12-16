@@ -10,11 +10,14 @@ export default function SideBar({ type }: SideBarProps) {
   const [selectedMapperFile, setSelectedMapperFile] = useState<File | null>(null);
   const [selectedQueryFile, setSelectedQueryFile] = useState<File | null>(null);
   const [isDatabaseLoaded, setIsDatabaseLoaded] = useState(false);
+  const [computationTime, setComputationTime] = useState<string | null>(null);
+  const [compTimeImage, setCompTimeImage] = useState<string | null>(null);
+  const [compTimeMusic, setCompTimeMusic] = useState<string | null>(null);
 
-  const uploadFile = async (file: File | null, endpoint: string): Promise<boolean> => {
+  const uploadFile = async (file: File | null, endpoint: string): Promise<{success: boolean; duration?: string}> => {
     if (!file) {
       alert('No file selected!');
-      return false;
+      return {success: false};
     }
 
     const formData = new FormData();
@@ -29,12 +32,13 @@ export default function SideBar({ type }: SideBarProps) {
       if (!response.ok) throw new Error(`Failed to upload file to ${endpoint}`);
 
       const result = await response.json();
+
       alert(result.message);
-      return true;
+      return {success: true, duration: result.duration};
     } catch (error) {
       console.error(`Error uploading to ${endpoint}:`, error);
       alert(`Failed to upload file to ${endpoint}`);
-      return false;
+      return {success: false};
     }
   };
 
@@ -45,8 +49,10 @@ export default function SideBar({ type }: SideBarProps) {
     const imageUploaded = await uploadFile(selectedImageFile, 'upload-database-image');
     const mapperUploaded = await uploadFile(selectedMapperFile, 'upload-mapper');
 
-    if (audioUploaded && imageUploaded && mapperUploaded) {
+    if (audioUploaded.success && imageUploaded.success && mapperUploaded.success) {
       setIsDatabaseLoaded(true);
+      setCompTimeImage(imageUploaded.duration || 'N/A');
+      setCompTimeMusic(audioUploaded.duration || 'N//A');
       alert('Database successfully uploaded!');
     }
   };
@@ -59,10 +65,33 @@ export default function SideBar({ type }: SideBarProps) {
       return;
     }
 
-    const queryUploaded = await uploadFile(selectedQueryFile, 'start-query');
-    if (queryUploaded) {
-      alert('Query started successfully!');
+    try {
+      const formData = new FormData();
+      formData.append('file', selectedQueryFile as File);
+
+      const endpoint = type === 'album' ? 'start-query/image' : 'start-query/audio'
+      const response = await fetch(`http://localhost:8000/${endpoint}/`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        alert('Error! Failed to start query!');
+      }
+
+      const result = await response.json();
+
+      setComputationTime(result.duration || 'N/A');
+
+      console.log("duration: ", result.duration)
+
+      alert(result.message);
+
+    } catch (error) {
+      console.error('Error starting query:', error);
+      alert('Failed to start query.');
     }
+
   };
 
   return (
@@ -113,10 +142,29 @@ export default function SideBar({ type }: SideBarProps) {
         />
         <button
           onClick={handleLoadDatabase}
-          className="text-bold mt-7 w-[80%] bg-white-25 hover:amebr py-2 rounded-lg font-medium text-blue-25"
+          className="text-bold mt-3 w-[80%] bg-white-25 hover:amebr py-2 rounded-lg font-medium text-blue-25"
         >
           Load Database
         </button>
+        <div className='mt-5 text-white-25 text-sm' >
+          {compTimeMusic ? (
+            <p>Load Time Audio: {compTimeMusic} s</p>
+          ) : (
+            <p>Load Time Audio: Unknown</p>
+          )}  
+          {compTimeImage ? (
+            <p>Load Time Audio: {compTimeImage} s</p>
+          ) : (
+            <p>Load Time Audio: Unknown</p>
+          )}  
+        </div>
+        <div className='mt-3 text-white-25 text-sm'>
+          {computationTime ? (
+            <p>Query Time: {computationTime} s</p> 
+          ) : (
+            <p>Query Time: Unknown</p>
+          )} 
+        </div>
       </div>
     </div>
   );

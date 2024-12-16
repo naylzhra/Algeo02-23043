@@ -3,6 +3,8 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from image_information_retrieval.image_processing import *
 from music_information_retrieval.music_processing import *
+from image_information_retrieval.iir_model import *
+from music_information_retrieval.mir_model import *
 import os
 import zipfile
 import rarfile
@@ -60,7 +62,12 @@ def save_and_extract_file(file: UploadFile, subdir: str):
 async def upload_database_audio(file: UploadFile = File(...)):
     try:
         path = save_and_extract_file(file, "audio")
+        
+        start_time = datetime.now()
         music_name, music_data = process_music_database(path)
+        end_time = datetime.now()
+        
+        duration = end_time - start_time
         
         response_data = {
             "music_name" : music_name,
@@ -73,7 +80,12 @@ async def upload_database_audio(file: UploadFile = File(...)):
             with open(json_output_path, "w") as json_file:
                 json.dump(response_data, json_file, indent=4)
             print(f"Response data saved to {json_output_path}")
-            return JSONResponse(content={"message": "Upload & Load Audio Success!"}, status_code=200)
+            return JSONResponse(
+                content={
+                    "message": "Upload & Load Audio Success!",
+                    "duration" : str(duration.total_seconds()),
+                    }, 
+                status_code=200)
         except Exception as e:
             print(f"Error writing JSON file: {e}")
             return JSONResponse(status_code=500, detail=str(e))
@@ -84,14 +96,18 @@ async def upload_database_audio(file: UploadFile = File(...)):
 async def upload_database_image(file: UploadFile = File(...)):
     try:
         path = save_and_extract_file(file, "image")
+        
+        start_time = datetime.now()
         projected_data, pixel_avg, pixel_std, image_name, Uk = process_data_image(path)
+        end_time = datetime.now()
+        
+        duration = end_time - start_time
 
         response_data = {
             "image_name" : image_name,
             "projected_data": projected_data,
             "pixel_avg" : pixel_avg,
             "pixel_std": pixel_std,
-            "uk": Uk,
             "uk": Uk,
         }
 
@@ -103,7 +119,12 @@ async def upload_database_image(file: UploadFile = File(...)):
             with open(json_output_path, "w") as json_file:
                 json.dump(response_data, json_file, indent=4)
             print(f"Response data saved to {json_output_path}")
-            return JSONResponse(content={"message": "Upload & Load Images Success!"}, status_code=200)
+            return JSONResponse(
+                content={
+                    "message": "Upload & Load Images Success!",
+                    "duration" : str(duration.total_seconds()),
+                    },
+                status_code=200)
         except Exception as e:
             print(f"Error writing JSON file: {e}")
             return JSONResponse(status_code=500, detail=str(e))
@@ -117,11 +138,28 @@ async def upload_mapper(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/start-query/")
-async def start_query(file: UploadFile = File(...)): #need adjustment in frontend
+@app.post("/start-query/{type}/")
+async def start_query(type: str, file: UploadFile = File(...)): #need adjustment in frontend
     try:
         path = save_and_extract_file(file, "query")
-
-        return JSONResponse(content={"message": "Query started successfully!"}, status_code=200)
+        query_path = os.path.join(path, file.filename) #get the query file name
+        
+        if type == "image":
+            duration = image_model(query_path)
+            return JSONResponse(
+                content={
+                    "message" : "Album query processed successfully!",
+                    "duration" : duration,
+                }
+            )
+        elif type == "audio":
+            duration = music_model(query_path)
+            return JSONResponse(
+                content={
+                    "message" : "Audio query processed successfully!",
+                    "duration" : duration,
+                }
+            )
+        return JSONResponse(content={"message": "Query not started due to invalid input."}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

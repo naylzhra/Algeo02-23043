@@ -10,7 +10,7 @@ export default function MusicRetrieval(){
     const router = useRouter()
     return(
         <div className="flex flex-col">
-            <div className="flex flex-row align-middle justify-between mt-3 w-full z-50 border-b-2 pb-2">
+            <div className="flex flex-row align-middle justify-between mt-3 w-full z-50 -b-2 pb-2">
                 {/*Left Component*/}
                 <div className="flex flex-row gap-5 ml-7"> 
                     <button>
@@ -45,7 +45,7 @@ export default function MusicRetrieval(){
                 {/*Side Bar*/}
                 <SideBar type = 'music'/>
                 {/*Main Page Bar*/}
-                <div className="border col-span-4">
+                <div className="col-span-4">
                     <MainContainer/>
                 </div>
             </div>
