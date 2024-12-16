@@ -6,6 +6,7 @@ from image_information_retrieval.image_processing import *
 from music_information_retrieval.music_processing import *
 from image_information_retrieval.iir_model import *
 from music_information_retrieval.mir_model import *
+from utils import *
 import os
 import zipfile
 import rarfile
@@ -59,6 +60,15 @@ def save_and_extract_file(file: UploadFile, subdir: str):
         with rarfile.RarFile(file_path, 'r') as rar_ref:
             rar_ref.extractall(target_dir)
         os.remove(file_path)  # Remove the rar file after extraction
+        
+    elif file.filename.endswith(".txt"):
+        json_path = os.path.join(target_dir, "mapper.json")
+        txt_to_json(file_path, json_path)
+
+    elif file.filename.endswith(".json") and file.filename != "mapper.json" :
+        mapper_path = os.path.join(target_dir, "mapper.json")
+        shutil.copyfile(file_path, mapper_path)
+        os.remove(file_path)
     return target_dir
 
 @app.post("/upload-database-audio/")
@@ -131,6 +141,7 @@ async def upload_database_image(file: UploadFile = File(...)):
             return JSONResponse(status_code=500, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=700, detail=str(e))
+    
 @app.post("/upload-mapper/")
 async def upload_mapper(file: UploadFile = File(...)):
     try:
