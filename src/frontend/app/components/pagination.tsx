@@ -40,15 +40,11 @@ const Pagination: React.FC<PaginationProperties> = ({items, itemsPerPage}) => {
                     Prev
                 </button>
                 
-                {Array.from({length: totalPages}, (_,index) => index+1).map((pageNumber) => (
                     <button
-                        key={pageNumber}
-                        onClick={() => handlePageChange(pageNumber)}
-                        className={`px-4 py-2 ${currentPage === pageNumber ? 'bg-yellow-25 text-blue-25' : 'bg-gray-200'} hover:bg-orange-400`}
+                        className="px-4 py-2 bg-white-25 text-blue-25 font-semibold"
                     >
-                        {pageNumber}
+                        {currentPage} / {totalPages}
                     </button>
-                ))}
 
                 <button
                     onClick={() => handlePageChange(currentPage+1)}
