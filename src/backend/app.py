@@ -23,6 +23,8 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
+app.mount("/images", StaticFiles(directory="database/image"), name="images")
+
 UPLOAD_DIR = "database"
 if not os.path.exists(UPLOAD_DIR):
     os.makedirs(UPLOAD_DIR)
