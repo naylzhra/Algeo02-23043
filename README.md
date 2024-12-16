@@ -30,6 +30,7 @@ Sebuah website yang dapat menerima input lagu, gambar album, dan file humming la
 ## Technologies Used
 ### Front-End
 - Next.js
+- React
 - Tailwind CSS
 
 ### Back-End
@@ -46,7 +47,10 @@ pip install numpy
 pip install scipy
 pip install rarfile
 pip install zipfile
+pip install shutil
 pip install uvicorn
+pip install fastapi
+pip install python-multipart
 npm install react
 npm install next
 ```
