@@ -133,7 +133,7 @@ def process_image_query(file_name):
         for index in sorted_euc_dist_indices:
             similarity_percentage = (max_distance - sorted_euc_distance[i][1]) / max_distance * 100
             r_similarity_percentage = round(similarity_percentage, 2)
-            if r_similarity_percentage >= 70 :
+            if r_similarity_percentage >= 60 :
                 iir_result.append((image_name[index][1], r_similarity_percentage))
             else:
                 break
