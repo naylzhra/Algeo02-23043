@@ -25,7 +25,7 @@ const Pagination: React.FC<PaginationProperties> = ({items, itemsPerPage}) => {
     return (
         <div>
              {/* Render paginated items */}
-            <div className="grid  grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 border">
+            <div className="grid  grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {currentItems.map((item, index) =>(
                     <AudioBox key = {item.id} title={item.title} percentage={item.percentage} image={item.image}/>
                 ))}
