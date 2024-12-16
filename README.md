@@ -1,4 +1,4 @@
-<h3> MuseIc </h3>
+<h1> MuseIc </h1>
 > Find your music
 
 Sebuah website yang dapat menerima input lagu, gambar album, dan file humming lalu mendeteksi nama dari lagu tersebut. Dibuat sebagai tugas besar 2 Algoritma dan Struktur Data.
@@ -27,6 +27,14 @@ Sebuah website yang dapat menerima input lagu, gambar album, dan file humming la
   </strong>
 </div>
 
+## Technologies Used
+### Front-End
+- Next.js
+- Tailwind CSS
+
+### Back-End
+- FastAPI
+- Python
 
 ## Installing / Getting started
 Anda perlu menginstall pip dan Node.js.
@@ -80,35 +88,11 @@ And again you'd need to tell what the previous code actually does.
 * Query by Humming
 * Album Finder
 
-## Configuration
-
-Here you should write what are all of the configurations a user can enter when
-using the project.
-
-#### Argument 1
-Type: `String`  
-Default: `'default value'`
-
-State what an argument does and how you can use it. If needed, you can provide
-an example below.
-
-Example:
-```bash
-awesome-project "Some other value"  # Prints "You're nailing this readme!"
-```
-
-#### Argument 2
-Type: `Number|Boolean`  
-Default: 100
-
-Copy-paste as many of these as you need.
 
 ## Contributing
 Apabila Anda ingin berkontribusi dalam projek ini, silakan fork repository ini dan gunakan feature branch. Pull requests akan diterima dengan hangat.
 
 ## Links
-
-
 - Repository: https://github.com/najwakahanifatima/Algeo02-23043
 - Issue tracker: https://github.com/your/awesome-project/issues
   - In case of sensitive bugs like security vulnerabilities, please contact
