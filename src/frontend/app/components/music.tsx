@@ -39,7 +39,7 @@ export default function MusicRetrieval(){
                         <span className="text-white"> Album Finder </span>
                     </button>
                 </div>
-      </div>
+            </div>
             {/*Body*/}
             <div className="grid grid-cols-5 gap-8 ml-7 mr-7 mt-10">
                 {/*Side Bar*/}
