@@ -1,7 +1,6 @@
 <h1> MuseIc </h1>
-> Find your music
 
-Sebuah website yang dapat menerima input lagu, gambar album, dan file humming lalu mendeteksi nama dari lagu tersebut. Dibuat sebagai tugas besar 2 Algoritma dan Struktur Data.
+Sebuah website yang dapat melakukan image information retrieval dan music information retrieval. Program menerima input dataset lagu, dataset gambar album, dan file query terkait. Program dapat mendeteksi gambar album beserta lagu dari query yang dimasukkan. Program ini menerapkan aplikasi matriks, vektor, cos similarity, dan euclidean distance dalam penentuan kemiripan query dengan dataset. Program ini dibuat untuk memenuhi Tugas Besar 2 IF2123 Aljabar Linear dan Geometri.
 
 <div id="contributor">
   <strong>
@@ -92,13 +91,11 @@ And again you'd need to tell what the previous code actually does.
 * Query by Humming
 * Album Finder
 
-
 ## Contributing
 Apabila Anda ingin berkontribusi dalam projek ini, silakan fork repository ini dan gunakan feature branch. Pull requests akan diterima dengan hangat.
 
 ## Links
 - Repository: https://github.com/najwakahanifatima/Algeo02-23043
-- Issue tracker: https://github.com/your/awesome-project/issues
 
 ## Licensing
 
